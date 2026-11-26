@@ -1,0 +1,464 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Трекер подписок — узнай, сколько ты платишь за подписки</title>
+<meta name="description" content="Бесплатный калькулятор подписок: добавьте свои сервисы и узнайте, сколько денег уходит в месяц и в год. Данные не покидают ваш браузер.">
+
+<!-- ============================================================
+     YANDEX WEBMASTER VERIFICATION
+     Вставьте сюда мета-тег верификации из Яндекс.Вебмастера
+     (вебмастер -> управление сайтом -> верификация -> meta-тег)
+     Пример: <meta name="yandex_verification" content="XXXXXXXXXXXX">
+     ============================================================ -->
+
+<!-- OG для соцсетей (поправьте url на свой домен после публикации) -->
+<meta property="og:title" content="Трекер подписок — сколько вы платите в год?">
+<meta property="og:description" content="Добавьте свои подписки и узнайте реальные годовые траты. Бесплатно, без регистрации.">
+<meta property="og:type" content="website">
+
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>💳</text></svg>">
+
+<style>
+  :root {
+    --bg: #0f1420;
+    --card: #1a2233;
+    --card2: #223049;
+    --text: #eef2f8;
+    --muted: #93a1b8;
+    --accent: #5b8cff;
+    --accent2: #7c5bff;
+    --good: #4ade80;
+    --warn: #fbbf24;
+    --danger: #f87171;
+    --radius: 14px;
+  }
+  * { box-sizing: border-box; }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    line-height: 1.5;
+  }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 20px 16px 60px; }
+
+  header { text-align: center; padding: 28px 0 8px; }
+  header h1 { font-size: 28px; margin: 0 0 6px; }
+  header p { color: var(--muted); margin: 0; font-size: 15px; }
+
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 18px;
+    margin-top: 18px;
+    box-shadow: 0 4px 18px rgba(0,0,0,.25);
+  }
+  h2 { font-size: 17px; margin: 0 0 12px; }
+
+  label { display: block; font-size: 13px; color: var(--muted); margin: 10px 0 4px; }
+  input, select {
+    width: 100%;
+    padding: 10px 12px;
+    font-size: 16px;
+    border-radius: 10px;
+    border: 1px solid #33415c;
+    background: var(--card2);
+    color: var(--text);
+    outline: none;
+  }
+  input:focus, select:focus { border-color: var(--accent); }
+
+  .btn {
+    display: inline-block;
+    padding: 12px 18px;
+    font-size: 16px;
+    font-weight: 600;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    background: linear-gradient(135deg, var(--accent), var(--accent2));
+    color: #fff;
+    margin-top: 14px;
+    width: 100%;
+  }
+  .btn.secondary {
+    background: var(--card2);
+    color: var(--text);
+    border: 1px solid #33415c;
+    font-weight: 500;
+  }
+  .btn.small { padding: 8px 12px; font-size: 14px; width: auto; margin-top: 0; }
+
+  .totals {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 10px;
+    margin-top: 4px;
+  }
+  .total {
+    background: var(--card2);
+    border-radius: 12px;
+    padding: 12px 8px;
+    text-align: center;
+  }
+  .total .num { font-size: 19px; font-weight: 700; }
+  .total .cap { font-size: 12px; color: var(--muted); }
+
+  .insight {
+    background: var(--card2);
+    border-radius: 12px;
+    padding: 12px 14px;
+    margin-top: 10px;
+    font-size: 14.5px;
+  }
+  .insight b { color: var(--warn); }
+
+  .item {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 11px 4px;
+    border-bottom: 1px solid #2a3752;
+  }
+  .item:last-child { border-bottom: none; }
+  .item .emoji { font-size: 22px; }
+  .item .info { flex: 1; min-width: 0; }
+  .item .name { font-weight: 600; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .item .meta { font-size: 13px; color: var(--muted); }
+  .iconbtn {
+    background: none;
+    border: none;
+    font-size: 17px;
+    cursor: pointer;
+    color: var(--muted);
+    padding: 6px;
+  }
+  .iconbtn:hover { color: var(--text); }
+
+  .empty { color: var(--muted); text-align: center; padding: 22px 10px; font-size: 14.5px; }
+
+  .toolbar { display: flex; gap: 8px; flex-wrap: wrap; margin-top: 14px; }
+  .toolbar .btn.secondary { flex: 1; text-align: center; }
+
+  .note { font-size: 12.5px; color: var(--muted); margin-top: 12px; text-align: center; }
+
+  footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 30px; }
+  footer a { color: var(--accent); }
+
+  /* ============================================================
+     РЕКЛАМНЫЕ СЛОТЫ ДЛЯ РСЯ
+     Когда получите код рекламного блока в кабинете РСЯ
+     (partner.yandex.ru), вставьте его внутрь div.ad-slot
+     Блок сам растянется на ширину контента.
+     ============================================================ */
+  .ad-slot {
+    margin: 22px 0;
+    min-height: 90px;
+    border-radius: var(--radius);
+    background: rgba(255,255,255,.03);
+    border: 1px dashed #33415c;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: #55648a;
+    font-size: 12px;
+    overflow: hidden;
+  }
+  /* после вставки реального кода РСЯ уберите текст-заглушку,
+     сам div остаётся: он нужен для renderTo */
+</style>
+</head>
+<body>
+<div class="wrap">
+
+  <!-- ============ РСЯ: верхний рекламный блок ============
+  <div class="ad-slot" id="yandex_rtb_top">
+    Код РСЯ (адаптивный блок) вставьте сюда
+  </div>
+  -->
+
+  <header>
+    <h1>💳 Трекер подписок</h1>
+    <p>Узнайте, сколько вы на самом деле платите за подписки каждый год</p>
+  </header>
+
+  <div class="card">
+    <h2>➕ Добавить подписку</h2>
+    <form id="addForm" onsubmit="return addFromForm(event)">
+      <label for="f-name">Название сервиса</label>
+      <input id="f-name" type="text" placeholder="Например: Кинопоиск" maxlength="40" required>
+
+      <label for="f-price">Цена, ₽</label>
+      <input id="f-price" type="number" min="1" step="1" placeholder="399" required>
+
+      <label for="f-period">Как часто списывается</label>
+      <select id="f-period">
+        <option value="month">Каждый месяц</option>
+        <option value="year">Раз в год</option>
+      </select>
+
+      <label for="f-cat">Категория</label>
+      <select id="f-cat">
+        <option value="🎬">🎬 Кино и сериалы</option>
+        <option value="🎵">🎵 Музыка</option>
+        <option value="🎮">🎮 Игры</option>
+        <option value="💻">💻 Софт и облако</option>
+        <option value="🛒">🛒 Доставка и покупки</option>
+        <option value="📱">📱 Связь</option>
+        <option value="📚">📚 Обучение</option>
+        <option value="💪">💪 Спорт и здоровье</option>
+        <option value="✨">✨ Другое</option>
+      </select>
+
+      <button class="btn" type="submit" id="submitBtn">Добавить</button>
+    </form>
+    <div class="toolbar">
+      <button class="btn secondary small" onclick="addDemo()" type="button">Заполнить примером</button>
+      <button class="btn secondary small" onclick="exportData()" type="button">⬇ Сохранить список</button>
+      <label class="btn secondary small" style="text-align:center;" for="importFile">⬆ Загрузить список</label>
+      <input id="importFile" type="file" accept=".json" style="display:none" onchange="importData(event)">
+    </div>
+  </div>
+
+  <div class="card" id="totalsCard" style="display:none">
+    <h2>📊 Ваши расходы</h2>
+    <div class="totals">
+      <div class="total"><div class="num" id="t-month">—</div><div class="cap">в месяц</div></div>
+      <div class="total"><div class="num" id="t-year">—</div><div class="cap">в год</div></div>
+      <div class="total"><div class="num" id="t-3y">—</div><div class="cap">за 3 года</div></div>
+    </div>
+    <div id="insights"></div>
+  </div>
+
+  <div class="card" id="listCard" style="display:none">
+    <h2>📋 Мои подписки (<span id="count">0</span>)</h2>
+    <div id="list"></div>
+    <div class="toolbar">
+      <button class="btn secondary" onclick="shareResult()" id="shareBtn" type="button">📤 Поделиться результатом</button>
+      <button class="btn secondary" onclick="clearAll()" type="button">🗑 Очистить всё</button>
+    </div>
+  </div>
+
+  <!-- ============ РСЯ: нижний рекламный блок ============
+  <div class="ad-slot" id="yandex_rtb_bottom">
+    Код РСЯ (адаптивный блок) вставьте сюда
+  </div>
+  -->
+
+  <p class="note">🔒 Все данные хранятся только в вашем браузере. Ничего не отправляется на сервер.</p>
+
+  <footer>
+    Сделано бесплатно · Поделитесь с другом — вдруг у него тоже 10 подписок 😉
+  </footer>
+
+</div>
+
+<script>
+"use strict";
+
+const KEY = "subs_tracker_v1";
+const COFFEE_PRICE = 250; // ₽ — средняя цена чашки кофе для инсайта
+
+let subs = [];
+let editingId = null;
+
+/* ---------- Хранилище ---------- */
+function load() {
+  try { subs = JSON.parse(localStorage.getItem(KEY)) || []; }
+  catch (e) { subs = []; }
+  subs = subs.filter(s => s && s.name && s.price > 0);
+}
+function save() { localStorage.setItem(KEY, JSON.stringify(subs)); }
+
+/* ---------- Форматирование ---------- */
+const fmt = new Intl.NumberFormat("ru-RU");
+function money(n) { return fmt.format(Math.round(n)) + " ₽"; }
+
+/* ---------- Модель ---------- */
+function monthlyCost(s) {
+  return s.period === "year" ? s.price / 12 : s.price;
+}
+
+function addSub(name, price, period, cat) {
+  subs.push({ id: Date.now() + Math.random(), name, price, period, cat });
+  save(); render();
+}
+
+/* ---------- Форма ---------- */
+function addFromForm(e) {
+  e.preventDefault();
+  const name = document.getElementById("f-name").value.trim();
+  const price = parseFloat(document.getElementById("f-price").value);
+  const period = document.getElementById("f-period").value;
+  const cat = document.getElementById("f-cat").value;
+  if (!name || !(price > 0)) return false;
+
+  if (editingId) {
+    const s = subs.find(x => x.id === editingId);
+    if (s) Object.assign(s, { name, price, period, cat });
+    editingId = null;
+    document.getElementById("submitBtn").textContent = "Добавить";
+  } else {
+    addSub(name, price, period, cat);
+  }
+  document.getElementById("addForm").reset();
+  document.getElementById("f-name").focus();
+  return false;
+}
+
+function editSub(id) {
+  const s = subs.find(x => x.id === id);
+  if (!s) return;
+  editingId = id;
+  document.getElementById("f-name").value = s.name;
+  document.getElementById("f-price").value = s.price;
+  document.getElementById("f-period").value = s.period;
+  document.getElementById("f-cat").value = s.cat;
+  document.getElementById("submitBtn").textContent = "Сохранить изменения";
+  window.scrollTo({ top: 0, behavior: "smooth" });
+}
+
+function removeSub(id) {
+  subs = subs.filter(x => x.id !== id);
+  if (editingId === id) {
+    editingId = null;
+    document.getElementById("submitBtn").textContent = "Добавить";
+    document.getElementById("addForm").reset();
+  }
+  save(); render();
+}
+
+/* ---------- Демо и очистка ---------- */
+function addDemo() {
+  addDemoItems([
+    { name: "Кинопоиск", price: 399, period: "month", cat: "🎬" },
+    { name: "Музыка", price: 299, period: "month", cat: "🎵" },
+    { name: "Игровая подписка", price: 1190, period: "month", cat: "🎮" },
+    { name: "Облачное хранилище", price: 1990, period: "year", cat: "💻" },
+    { name: "Доставка еды", price: 299, period: "month", cat: "🛒" }
+  ]);
+}
+function addDemoItems(items) {
+  items.forEach(i => subs.push({ id: Date.now() + Math.random(), ...i }));
+  save(); render();
+}
+function clearAll() {
+  if (!subs.length) return;
+  if (!confirm("Удалить все подписки? Действие необратимо.")) return;
+  subs = []; editingId = null;
+  save(); render();
+}
+
+/* ---------- Экспорт / импорт ---------- */
+function exportData() {
+  if (!subs.length) { alert("Список пуст — сначала добавьте подписки."); return; }
+  const blob = new Blob([JSON.stringify(subs, null, 2)], { type: "application/json" });
+  const a = document.createElement("a");
+  a.href = URL.createObjectURL(blob);
+  a.download = "my-subscriptions.json";
+  a.click();
+  URL.revokeObjectURL(a.href);
+}
+function importData(e) {
+  const file = e.target.files[0];
+  if (!file) return;
+  const reader = new FileReader();
+  reader.onload = () => {
+    try {
+      const arr = JSON.parse(reader.result);
+      if (!Array.isArray(arr)) throw new Error();
+      arr.forEach(s => {
+        if (s && s.name && s.price > 0) {
+          subs.push({
+            id: Date.now() + Math.random(),
+            name: String(s.name).slice(0, 40),
+            price: Number(s.price),
+            period: s.period === "year" ? "year" : "month",
+            cat: s.cat || "✨"
+          });
+        }
+      });
+      save(); render();
+    } catch (err) { alert("Не удалось прочитать файл. Нужен JSON, сохранённый этим же сайтом."); }
+  };
+  reader.readAsText(file);
+  e.target.value = "";
+}
+
+/* ---------- Отрисовка ---------- */
+function render() {
+  const has = subs.length > 0;
+  document.getElementById("listCard").style.display = has ? "" : "none";
+  document.getElementById("totalsCard").style.display = has ? "" : "none";
+  document.getElementById("count").textContent = subs.length;
+  if (!has) return;
+
+  const totalMonth = subs.reduce((a, s) => a + monthlyCost(s), 0);
+  const totalYear = totalMonth * 12;
+
+  document.getElementById("t-month").textContent = money(totalMonth);
+  document.getElementById("t-year").textContent = money(totalYear);
+  document.getElementById("t-3y").textContent = money(totalYear * 3);
+
+  const sorted = [...subs].sort((a, b) => monthlyCost(b) - monthlyCost(a));
+  const top = sorted[0];
+  const share = Math.round(monthlyCost(top) / totalMonth * 100);
+  const cups = Math.floor(totalYear / COFFEE_PRICE);
+
+  document.getElementById("insights").innerHTML =
+    '<div class="insight">👑 Самая дорогая — <b>' + esc(top.name) + "</b>: " +
+    money(monthlyCost(top)) + "/мес — это <b>" + share + "%</b> всех ваших трат на подписки.</div>" +
+    '<div class="insight">☕ За год это <b>' + fmt.format(cups) + "</b> чашек кофе. За три года — " + fmt.format(cups * 3) + ".</div>" +
+    (share >= 40
+      ? '<div class="insight">💡 Одна подписка занимает почти половину бюджета. Возможно, её стоит отменить или заменить на более дешёвую.</div>'
+      : '<div class="insight">💡 Совет: проверьте, все ли подписки вы реально используете. Отмена даже одной экономит тысячи за год.</div>');
+
+  const list = document.getElementById("list");
+  list.innerHTML = "";
+  sorted.forEach(s => {
+    const row = document.createElement("div");
+    row.className = "item";
+    const per = s.period === "year" ? "в год" : "в месяц";
+    row.innerHTML =
+      '<span class="emoji">' + s.cat + "</span>" +
+      '<span class="info"><span class="name">' + esc(s.name) + "</span>" +
+      '<span class="meta">' + money(s.price) + " " + per +
+      (s.period === "year" ? " (" + money(monthlyCost(s)) + "/мес)" : "") + "</span></span>" +
+      '<button class="iconbtn" title="Изменить" onclick="editSub(' + s.id + ')">✏️</button>' +
+      '<button class="iconbtn" title="Удалить" onclick="removeSub(' + s.id + ')">✕</button>';
+    list.appendChild(row);
+  });
+}
+
+function esc(t) {
+  return String(t).replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;").replace(/"/g, "&quot;");
+}
+
+/* ---------- Поделиться ---------- */
+function shareResult() {
+  if (!subs.length) return;
+  const totalMonth = subs.reduce((a, s) => a + monthlyCost(s), 0);
+  const totalYear = totalMonth * 12;
+  const link = location.href.split("#")[0];
+  const text = "Мои подписки съедают " + money(totalMonth) + " в месяц — это " + money(totalYear) +
+    " в год! 🤯 Посчитай свои: " + link;
+  if (navigator.share) {
+    navigator.share({ title: "Трекер подписок", text }).catch(() => {});
+  } else if (navigator.clipboard) {
+    navigator.clipboard.writeText(text).then(
+      () => alert("Текст скопирован — вставьте его в мессенджер или соцсеть!"),
+      () => prompt("Скопируйте текст вручную:", text)
+    );
+  } else {
+    prompt("Скопируйте текст:", text);
+  }
+}
+
+/* ---------- Старт ---------- */
+load();
+render();
+</script>
+</body>
+</html>
