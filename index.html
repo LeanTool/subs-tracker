@@ -168,6 +168,18 @@
   }
   /* после вставки реального кода РСЯ уберите текст-заглушку,
      сам div остаётся: он нужен для renderTo */
+     .nav-link {
+  color: #eef2f8;                 /* почти белый текст */
+  text-decoration: none;         /* без подчёркивания */
+  padding: 6px 12px;             /* отступы, чтобы ссылка не прилипала к краям */
+  border-radius: 8px;            /* скругление */
+  transition: background 0.2s, color 0.2s;
+}
+.nav-link:hover {
+  background: rgba(255, 255, 255, 0.1); /* полупрозрачный белый фон при наведении */
+  color: #ffffff;                /* полностью белый при наведении */
+}
+
 </style>
 </head>
 <body>
