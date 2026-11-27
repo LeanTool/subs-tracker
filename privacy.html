@@ -1,38 +1,86 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8">
-  <title>Политика конфиденциальности — Трекер подписок</title>
-  <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 15px; color: #333; line-height: 1.6; }
-    a { color: #007bff; }
-    h1 { color: #2c3e50; }
-    .back-link { display: inline-block; margin-bottom: 20px; font-weight: 600; }
-    pre { background: #f4f4f4; padding: 10px; border-radius: 4px; overflow-x: auto; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Политика конфиденциальности — Трекер подписок</title>
+
+<style>
+  :root {
+    --bg: #0f1420;
+    --card: #1a2233;
+    --text: #eef2f8;
+    --muted: #93a1b8;
+    --accent: #5b8cff;
+    --radius: 14px;
+  }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 20px 16px; }
+  header { text-align: center; padding: 28px 0 16px; }
+  header h1 { font-size: 24px; margin: 0 0 8px; }
+  header p { color: var(--muted); margin: 0; font-size: 15px; }
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-top: 16px;
+    box-shadow: 0 4px 18px rgba(0,0,0,.25);
+  }
+  h2 { font-size: 18px; margin: 20px 0 12px; color: var(--accent); }
+  p { margin: 0 0 12px; }
+  .note { font-size: 13px; color: var(--muted); margin-top: 20px; text-align: center; }
+  footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 30px; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .nav-link {
+    color: #eef2f8; text-decoration: none; padding: 6px 12px; border-radius: 8px;
+    transition: background 0.2s, color 0.2s;
+  }
+  .nav-link:hover { background: rgba(255, 255, 255, 0.1); color: #ffffff; }
+</style>
 </head>
 <body>
-  <a href="/subs-tracker/" class="back-link">← Вернуться к трекеру</a>
-  <h1>Политика конфиденциальности</h1>
-  
-  <h2>Какие данные мы собираем</h2>
-  <p>Мы <strong>не собираем</strong> никаких персональных данных. В сервисе нет регистрации, логинов, email или IP-адресов.</p>
+<div class="wrap">
+  <nav style="margin-bottom: 15px;">
+    <a href="index.html" class="nav-link">← На главную</a>
+  </nav>
 
-  <h2>Как хранятся данные о подписках</h2>
-  <p>Список подписок и суммы хранятся в <code>localStorage</code> твоего браузера. Это значит:</p>
-  <ul>
-    <li>Данные видны только тебе на твоём устройстве.</li>
-    <li>Они не отправляются на сервер и не сохраняются у нас.</li>
-    <li>Если ты очистишь кэш браузера или откроешь сайт на другом устройстве, данные пропадут.</li>
-  </ul>
+  <header>
+    <h1>🔒 Политика конфиденциальности</h1>
+    <p>Что мы собираем, а что — нет</p>
+  </header>
 
-  <h2>Использование cookies и технологий</h2>
-  <p>Сайт не использует cookies, трекеры, аналитику или рекламные пиксели (пока что). Всё работает прямо в браузере.</p>
+  <div class="card">
+    <h2>Ваши подписки — только у вас</h2>
+    <p>Данные о ваших подписках (названия, цены, категории) хранятся исключительно в <b>localStorage вашего браузера</b>. Они не отправляются на сервер, не сохраняются в базе данных и не видны нам. Если вы очистите кэш браузера — данные пропадут.</p>
 
-  <h2>Изменения политики</h2>
-  <p>Если политика изменится, мы обновим эту страницу. Дата последнего обновления: 2024 год.</p>
+    <h2>Что мы считаем для статистики</h2>
+    <p>На сайте установлен счётчик <b>Яндекс Метрика (№114712072)</b>. Он собирает обезличенные данные о визитах:</p>
+    <ul>
+      <li>Факт посещения страницы и время на сайте.</li>
+      <li>Устройство и браузер (мобильный/десктоп, Chrome/Safari и т.п.).</li>
+      <li>Источник перехода (из поиска, по ссылке, напрямую).</li>
+      <li>Движения мыши и клики — благодаря функции <b>Вебвизор</b>. Это нужно, чтобы понять, где пользователи бросают заполнение формы.</li>
+    </ul>
+    <p>Эти данные используются только для анализа поведения пользователей и улучшения сайта. Мы не собираем персональные данные (ФИО, email, телефон и т.п.).</p>
 
-  <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee;">
-  <p style="font-size: 0.85em; color: #777;">Если у тебя есть вопросы — напиши нам (контакты, если есть).</p>
+    <h2>Файлы cookie</h2>
+    <p>Яндекс Метрика использует cookie (в частности, файл <code>ym</code>) для идентификации уникальных посетителей. Вы можете отключить сбор статистики, заблокировав счётчик Метрики в браузере или используя расширения для блокировки трекеров.</p>
+
+    <h2>Изменения</h2>
+    <p>Мы можем обновлять эту политику. Актуальная версия всегда доступна по адресу <code>ваш-домен/privacy.html</code>.</p>
+  </div>
+
+  <p class="note">Сделано бесплатно. Данные не покидают ваш браузер.</p>
+  <footer>
+    Трекер подписок · 2024
+  </footer>
+</div>
 </body>
 </html>
