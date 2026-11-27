@@ -1,29 +1,87 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="utf-8">
-  <title>О проекте — Трекер подписок</title>
-  <style>
-    body { font-family: system-ui, -apple-system, Segoe UI, Roboto, Helvetica, Arial, sans-serif; max-width: 600px; margin: 40px auto; padding: 0 15px; color: #333; line-height: 1.6; }
-    a { color: #007bff; text-decoration: none; }
-    a:hover { text-decoration: underline; }
-    h1 { color: #2c3e50; }
-    .back-link { display: inline-block; margin-bottom: 20px; font-weight: 600; }
-  </style>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>О проекте — Трекер подписок</title>
+
+<style>
+  :root {
+    --bg: #0f1420;
+    --card: #1a2233;
+    --text: #eef2f8;
+    --muted: #93a1b8;
+    --accent: #5b8cff;
+    --radius: 14px;
+  }
+  body {
+    font-family: -apple-system, "Segoe UI", Roboto, "Helvetica Neue", sans-serif;
+    background: var(--bg);
+    color: var(--text);
+    margin: 0;
+    line-height: 1.6;
+  }
+  .wrap { max-width: 680px; margin: 0 auto; padding: 20px 16px; }
+  header { text-align: center; padding: 28px 0 16px; }
+  header h1 { font-size: 24px; margin: 0 0 8px; }
+  header p { color: var(--muted); margin: 0; font-size: 15px; }
+  .card {
+    background: var(--card);
+    border-radius: var(--radius);
+    padding: 20px;
+    margin-top: 16px;
+    box-shadow: 0 4px 18px rgba(0,0,0,.25);
+  }
+  h2 { font-size: 18px; margin: 20px 0 12px; color: var(--accent); }
+  p { margin: 0 0 12px; }
+  ul { margin: 0 0 12px 20px; }
+  li { margin-bottom: 6px; }
+  .note { font-size: 13px; color: var(--muted); margin-top: 20px; text-align: center; }
+  footer { text-align: center; color: var(--muted); font-size: 13px; margin-top: 30px; }
+  a { color: var(--accent); text-decoration: none; }
+  a:hover { text-decoration: underline; }
+  .nav-link {
+    color: #eef2f8;
+    text-decoration: none;
+    padding: 6px 12px;
+    border-radius: 8px;
+    transition: background 0.2s, color 0.2s;
+  }
+  .nav-link:hover { background: rgba(255, 255, 255, 0.1); color: #ffffff; }
+</style>
 </head>
 <body>
-  <a href="/subs-tracker/" class="back-link">← Вернуться к трекеру</a>
-  <h1>О проекте «Трекер подписок»</h1>
-  <p>Это простой и бесплатный инструмент, чтобы понять, сколько денег утекает на подписки каждый месяц и год.</p>
-  <p><strong>Почему это полезно:</strong></p>
-  <ul>
-    <li>Показывает реальную картину расходов — часто оказывается, что «мелочи» съедают десятки тысяч рублей в год.</li>
-    <li>Помогает найти самые дорогие подписки и решить, от чего можно отказаться.</li>
-    <li>Считает траты в понятных единицах (например, в чашках кофе) — так проще принять решение.</li>
-  </ul>
-  <p><strong>Как это работает:</strong> все данные хранятся только в твоём браузере (в localStorage). Мы не собираем персональные данные, не передаём их третьим лицам и не используем серверы. Это полностью приватно.</p>
-  <p>Проект сделан энтузиастом для обычных людей. Если хочешь поделиться идеей или предложить улучшение — напиши на почту (если есть) или в соцсетях (если есть).</p>
-  <hr style="margin: 30px 0; border: 0; border-top: 1px solid #eee;">
-  <p style="font-size: 0.85em; color: #777;">© 2024 LeanTool. Бесплатный инструмент без регистрации.</p>
+<div class="wrap">
+  <nav style="margin-bottom: 15px;">
+    <a href="index.html" class="nav-link">← На главную</a>
+  </nav>
+
+  <header>
+    <h1>💡 О проекте</h1>
+    <p>Зачем нужен трекер и как он работает</p>
+  </header>
+
+  <div class="card">
+    <p>Это простой и бесплатный инструмент, чтобы понять, сколько денег утекает на подписки каждый месяц и год.</p>
+    
+    <h2>Почему это полезно</h2>
+    <ul>
+      <li>Показывает реальную картину расходов — часто оказывается, что «мелочи» съедают десятки тысяч рублей в год.</li>
+      <li>Помогает найти самые дорогие подписки и решить, от чего можно отказаться.</li>
+      <li>Считает траты в понятных единицах (например, в чашках кофе) — так проще принять решение.</li>
+    </ul>
+
+    <h2>Как это работает</h2>
+    <p>Все данные хранятся только в твоём браузере (в <b>localStorage</b>). Мы не собираем персональные данные, не передаём их третьим лицам и не используем серверы. Это полностью приватно.</p>
+    
+    <h2>Кто это сделал</h2>
+    <p>Проект сделан энтузиастом для обычных людей. Если хочешь поделиться идеей или предложить улучшение — напиши на почту или в соцсетях (ссылки можно добавить сюда позже).</p>
+  </div>
+
+  <p class="note">Сделано бесплатно. Данные не покидают ваш браузер.</p>
+  <footer>
+    Трекер подписок · 2024
+  </footer>
+</div>
 </body>
 </html>
