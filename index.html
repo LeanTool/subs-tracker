@@ -339,6 +339,11 @@ function addFromForm(e) {
   document.getElementById("f-name").focus();
   return false;
 }
+     const price = parseFloat(document.getElementById("f-price").value);
+if (!name || !(price > 0)) {
+  alert("Название обязательно, цена должна быть больше 0.");
+  return false;
+}
 
 function editSub(id) {
   const s = subs.find(x => x.id === id);
