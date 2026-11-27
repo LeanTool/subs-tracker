@@ -285,9 +285,22 @@ let editingId = null;
 
 /* ---------- Хранилище ---------- */
 function load() {
-  try { subs = JSON.parse(localStorage.getItem(KEY)) || []; }
-  catch (e) { subs = []; }
-  subs = subs.filter(s => s && s.name && s.price > 0);
+  try {
+    const raw = localStorage.getItem(KEY);
+    subs = raw ? JSON.parse(raw) : [];
+  } catch (e) {
+    console.error("localStorage недоступен", e);
+    subs = [];
+    // Можно один раз показать уведомление, если его ещё нет
+    if (!document.getElementById('ls-warning')) {
+      const w = document.createElement('div');
+      w.id = 'ls-warning';
+      w.className = 'note';
+      w.style.color = '#fbbf24';
+      w.textContent = '⚠️ В этом режиме данные не сохраняются (localStorage недоступен).';
+      document.querySelector('.wrap').prepend(w);
+    }
+  }
 }
 function save() { localStorage.setItem(KEY, JSON.stringify(subs)); }
 
