@@ -325,7 +325,11 @@ function addFromForm(e) {
   const price = parseFloat(document.getElementById("f-price").value);
   const period = document.getElementById("f-period").value;
   const cat = document.getElementById("f-cat").value;
-  if (!name || !(price > 0)) return false;
+
+  if (!name || !(price > 0)) {
+    alert("Название обязательно, цена должна быть больше 0.");
+    return false;
+  }
 
   if (editingId) {
     const s = subs.find(x => x.id === editingId);
@@ -339,6 +343,7 @@ function addFromForm(e) {
   document.getElementById("f-name").focus();
   return false;
 }
+
      const price = parseFloat(document.getElementById("f-price").value);
 if (!name || !(price > 0)) {
   alert("Название обязательно, цена должна быть больше 0.");
