@@ -6,13 +6,6 @@
 <title>Трекер подписок — узнай, сколько ты платишь за подписки</title>
 <meta name="description" content="Бесплатный калькулятор подписок: добавьте свои сервисы и узнайте, сколько денег уходит в месяц и в год. Данные не покидают ваш браузер.">
 
-<!-- ============================================================
-     YANDEX WEBMASTER VERIFICATION
-     Вставьте сюда мета-тег верификации из Яндекс.Вебмастера
-     (вебмастер -> управление сайтом -> верификация -> meta-тег)
-     Пример: <meta name="yandex_verification" content="XXXXXXXXXXXX">
-     ============================================================ -->
-
 <!-- OG для соцсетей (поправьте url на свой домен после публикации) -->
 <meta property="og:title" content="Трекер подписок — сколько вы платите в год?">
 <meta property="og:description" content="Добавьте свои подписки и узнайте реальные годовые траты. Бесплатно, без регистрации.">
@@ -168,29 +161,28 @@
   }
   /* после вставки реального кода РСЯ уберите текст-заглушку,
      сам div остаётся: он нужен для renderTo */
-     .nav-link {
-  color: #eef2f8;                 /* почти белый текст */
-  text-decoration: none;         /* без подчёркивания */
-  padding: 6px 12px;             /* отступы, чтобы ссылка не прилипала к краям */
-  border-radius: 8px;            /* скругление */
-  transition: background 0.2s, color 0.2s;
-}
-.nav-link:hover {
-  background: rgba(255, 255, 255, 0.1); /* полупрозрачный белый фон при наведении */
-  color: #ffffff;                /* полностью белый при наведении */
-}
 
+  .nav-link {
+    color: #eef2f8;                 /* почти белый текст */
+    text-decoration: none;          /* без подчёркивания */
+    padding: 6px 12px;              /* отступы, чтобы ссылка не прилипала к краям */
+    border-radius: 8px;             /* скругление */
+    transition: background 0.2s, color 0.2s;
+  }
+  .nav-link:hover {
+    background: rgba(255, 255, 255, 0.1); /* полупрозрачный белый фон при наведении */
+    color: #ffffff;                       /* полностью белый при наведении */
+  }
 </style>
 </head>
 <body>
 <div class="wrap">
 
   <nav style="margin-bottom: 15px;">
-  <a href="about.html" class="nav-link">О проекте</a>
-  <span style="color: #55648a; margin: 0 8px;">|</span>
-  <a href="privacy.html" class="nav-link">Политика конфиденциальности</a>
-</nav>
-
+    <a href="about.html" class="nav-link">О проекте</a>
+    <span style="color: #55648a; margin: 0 8px;">|</span>
+    <a href="privacy.html" class="nav-link">Политика конфиденциальности</a>
+  </nav>
 
   <!-- ============ РСЯ: верхний рекламный блок ============
   <div class="ad-slot" id="yandex_rtb_top">
@@ -291,18 +283,30 @@ function load() {
   } catch (e) {
     console.error("localStorage недоступен", e);
     subs = [];
-    // Можно один раз показать уведомление, если его ещё нет
-    if (!document.getElementById('ls-warning')) {
-      const w = document.createElement('div');
-      w.id = 'ls-warning';
-      w.className = 'note';
-      w.style.color = '#fbbf24';
-      w.textContent = '⚠️ В этом режиме данные не сохраняются (localStorage недоступен).';
-      document.querySelector('.wrap').prepend(w);
-    }
+    showLsWarning();
+  }
+  // страховка от битых данных: оставляем только валидные записи
+  subs = subs.filter(s => s && typeof s.name === "string" && s.name.trim() && Number(s.price) > 0);
+}
+
+function save() {
+  try {
+    localStorage.setItem(KEY, JSON.stringify(subs));
+  } catch (e) {
+    console.error("Не удалось сохранить данные", e);
+    showLsWarning();
   }
 }
-function save() { localStorage.setItem(KEY, JSON.stringify(subs)); }
+
+function showLsWarning() {
+  if (document.getElementById("ls-warning")) return;
+  const w = document.createElement("div");
+  w.id = "ls-warning";
+  w.className = "note";
+  w.style.color = "#fbbf24";
+  w.textContent = "⚠️ В этом режиме данные не сохраняются (localStorage недоступен).";
+  document.querySelector(".wrap").prepend(w);
+}
 
 /* ---------- Форматирование ---------- */
 const fmt = new Intl.NumberFormat("ru-RU");
@@ -336,17 +340,12 @@ function addFromForm(e) {
     if (s) Object.assign(s, { name, price, period, cat });
     editingId = null;
     document.getElementById("submitBtn").textContent = "Добавить";
+    save(); render(); // сохраняем изменения сразу, а не при следующем действии
   } else {
     addSub(name, price, period, cat);
   }
   document.getElementById("addForm").reset();
   document.getElementById("f-name").focus();
-  return false;
-}
-
-     const price = parseFloat(document.getElementById("f-price").value);
-if (!name || !(price > 0)) {
-  alert("Название обязательно, цена должна быть больше 0.");
   return false;
 }
 
@@ -464,12 +463,12 @@ function render() {
     row.className = "item";
     const per = s.period === "year" ? "в год" : "в месяц";
     row.innerHTML =
-      '<span class="emoji">' + s.cat + "</span>" +
+      '<span class="emoji">' + esc(s.cat) + "</span>" +
       '<span class="info"><span class="name">' + esc(s.name) + "</span>" +
       '<span class="meta">' + money(s.price) + " " + per +
       (s.period === "year" ? " (" + money(monthlyCost(s)) + "/мес)" : "") + "</span></span>" +
-      '<button class="iconbtn" title="Изменить" onclick="editSub(' + s.id + ')">✏️</button>' +
-      '<button class="iconbtn" title="Удалить" onclick="removeSub(' + s.id + ')">✕</button>';
+      '<button class="iconbtn" title="Изменить" aria-label="Изменить подписку" onclick="editSub(' + s.id + ')">✏️</button>' +
+      '<button class="iconbtn" title="Удалить" aria-label="Удалить подписку" onclick="removeSub(' + s.id + ')">✕</button>';
     list.appendChild(row);
   });
 }
